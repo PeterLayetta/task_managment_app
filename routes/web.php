@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,17 +17,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('admin',function(){
-    return '<h1>Admin Page<h1>';
-})->middleware(['auth','verified','role:admin']);
-
-Route::get('manager',function(){
-    return '<h1>Manager Page<h1>';
-})->middleware(['auth','verified','role:manager|admin']);
-
-Route::get('tugas',function(){
-    return view('tugas');
-})->middleware(['auth','verified','role_or_permission:lihat-tugas|admin']);
-
-Route::resource('tasks', TaskController::class);
 require __DIR__.'/auth.php';

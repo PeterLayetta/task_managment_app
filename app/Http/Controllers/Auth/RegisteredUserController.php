@@ -31,8 +31,13 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required','confirmed','min:8','regex:/[A-Z]/','regex:/[0-9]/','regex:/[!$&%*@#^()_+={}|\:;,.<>?]/'],
+        ], [
+            'password.required' => 'Please provide a password.',
+            'password.confirmed' => 'Password confirmation does not match.',
+            'password.min' => 'Password must be at least 8 characters and contains an uppercase letter, a number, and a symbol.',
+            'password.regex' => 'Password must be at least 8 characters and includes an uppercase letter, a number, and a symbol.',
         ]);
 
         $user = User::create([
@@ -40,8 +45,6 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
-        $user->givePermissionTo('lihat-tugas');
 
         event(new Registered($user));
 
